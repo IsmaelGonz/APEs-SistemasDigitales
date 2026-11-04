@@ -48,33 +48,33 @@ Demuestra cómo gestionar el tiempo a nivel de hardware con altísima precisión
   * En Arduino IDE: Herramientas > Placa > ESP32 Dev Module.
 
 🔧 Configuración de Hardware
-LED Principal: Ánodo al pin GPIO19 mediante resistencia de 330 Ω, cátodo a GND.
+  * LED Principal: Ánodo al pin GPIO19 mediante resistencia de 330 Ω, cátodo a GND.
 
-Onda Cuadrada: Pin GPIO18 directo a la punta del analizador/osciloscopio.
+  * Onda Cuadrada: Pin GPIO18 directo a la punta del analizador/osciloscopio.
 
-Monitor Serie: Configurado a 115200 baudios.
+  * Monitor Serie: Configurado a 115200 baudios.
 
 🎮 4. Uso del proyecto
 💡 Código 1: LED con temporizador y patrón bandera
-Cargar el codigo1.ino a la placa ESP32.
+ * 1. Cargar el codigo1.ino a la placa ESP32.
 
-Abrir el Monitor Serie (115200 baudios).
+ * 2. Abrir el Monitor Serie (115200 baudios).
 
-Modificar la variable ALARMA_US a valores como 1000000, 250000 y 50000 para observar las variaciones en el tiempo de impresión y velocidad de parpadeo del LED.
+ * 3. Modificar la variable ALARMA_US a valores como 1000000, 250000 y 50000 para observar las variaciones en el tiempo de impresión y velocidad de parpadeo del LED.
 
 🎛️ Código 2: Generar y medir onda cuadrada
-Cargar el codigo2.ino configurando la variable FREC_SENAL (ej. 100, 1000, 5000).
+ * 1. Cargar el codigo2.ino configurando la variable FREC_SENAL (ej. 100, 1000, 5000).
 
-En el Monitor Serie, verificar el cálculo interno del valor de la alarma y los "cambios de pin por segundo".
+ * 2. En el Monitor Serie, verificar el cálculo interno del valor de la alarma y los "cambios de pin por segundo".
 
-Medición Física: Conectar un multímetro en modo Hz (o un osciloscopio) entre GND y GPIO18 para comprobar que la frecuencia real entregada por la placa coincida con la programada en el código.
+ * 3. Medición Física: Conectar un multímetro en modo Hz (o un osciloscopio) entre GND y GPIO18 para comprobar que la frecuencia real entregada por la placa coincida con la programada en el código.
 
 💻 Análisis con Wokwi y PulseView
-Importar el archivo diagram.json en wokwi.com. Iniciar la simulación y detenerla a los 3 segundos.
+ * 1. Importar el archivo diagram.json en wokwi.com. Iniciar la simulación y detenerla a los 3 segundos.
 
-Permitir la descarga del archivo generado wokwi-logic.vcd.
+ * 2. Permitir la descarga del archivo generado wokwi-logic.vcd.
 
-Abrir PulseView → Import Value Change Dump data. Medir el periodo exacto de la onda analizando el tiempo entre los flancos de subida del canal logic.D0.
+ * 3. Abrir PulseView → Import Value Change Dump data. Medir el periodo exacto de la onda analizando el tiempo entre los flancos de subida del canal logic.D0.
 
 ## 📂 5. Estructura del repositorio
 
@@ -95,10 +95,10 @@ APE3/
 
 ✅ 6. Verificación técnica y justificaciones
 🔍 Detalles técnicos aplicados
-El Patrón Bandera (Código 1): La variable bandera (hayAlarma) se declara con el modificador volatile para forzar al compilador a leerla directamente desde la RAM y evitar cuelgues u optimizaciones no deseadas. La impresión de texto pesada (Serial.printf) queda fuera de la ISR y es manejada por el loop().
+  * El Patrón Bandera (Código 1): La variable bandera (hayAlarma) se declara con el modificador volatile para forzar al compilador a leerla directamente desde la RAM y evitar cuelgues u optimizaciones no deseadas. La impresión de texto pesada (Serial.printf) queda fuera de la ISR y es manejada por el loop().
 
-Priorización en ISR (Código 2): Se omite el patrón bandera y se invierte el pin (digitalWrite) directamente dentro de la ISR para asegurar que la señal cuadrada sea matemáticamente perfecta y no sufra retardos de procesamiento.
+  * Priorización en ISR (Código 2): Se omite el patrón bandera y se invierte el pin (digitalWrite) directamente dentro de la ISR para asegurar que la señal cuadrada sea matemáticamente perfecta y no sufra retardos de procesamiento.
 
-El Factor 2: Se programa aplicando la fórmula ALARMA_US = 1000000 / (2 * FREC_SENAL). Dado que una onda cuadrada completa requiere un flanco de subida (encendido) y uno de bajada (apagado), el temporizador debe alarmar al doble de la velocidad de la frecuencia objetivo.
+  * El Factor 2: Se programa aplicando la fórmula ALARMA_US = 1000000 / (2 * FREC_SENAL). Dado que una onda cuadrada completa requiere un flanco de subida (encendido) y uno de bajada (apagado), el temporizador debe alarmar al doble de la velocidad de la frecuencia objetivo.
 
-Autorrecarga Continua: Se emplea la instrucción timerAlarm(timer, ALARMA_US, true, 0); donde el parámetro true evita desbordamientos reseteando infinitamente el hardware.
+  * Autorrecarga Continua: Se emplea la instrucción timerAlarm(timer, ALARMA_US, true, 0); donde el parámetro true evita desbordamientos reseteando infinitamente el hardware.
