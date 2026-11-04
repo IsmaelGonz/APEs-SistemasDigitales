@@ -76,8 +76,9 @@ Permitir la descarga del archivo generado wokwi-logic.vcd.
 
 Abrir PulseView → Import Value Change Dump data. Medir el periodo exacto de la onda analizando el tiempo entre los flancos de subida del canal logic.D0.
 
----
-📂 5. Estructura del repositorio
+## 📂 5. Estructura del repositorio
+
+```text
 APE3/
 ├── capturas/
 │   ├── medicion.jpg           # Evidencia física de medición 1
@@ -90,7 +91,7 @@ APE3/
 │   ├── diagram.json           # Circuito para Wokwi (ESP32 + LED + Analizador)
 │   └── wokwi-logic.vcd        # Captura de datos del analizador lógico (.vcd)
 └── Readme.md                  # Documentación principal
----
+```
 
 ✅ 6. Verificación técnica y justificaciones
 🔍 Detalles técnicos aplicados
